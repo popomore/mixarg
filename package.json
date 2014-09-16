@@ -1,6 +1,6 @@
 {
   "name": "mixarg",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "mixin argument with defaults using minimist",
   "main": "index",
   "dependencies": {

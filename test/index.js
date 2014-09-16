@@ -27,6 +27,7 @@ describe('mixarg', function() {
     }).should.throw('arguments should be string or object.');
     mixarg({}, {});
     mixarg({}, '');
+    mixarg({}, []);
   });
 
   it('should not return the same ref', function() {
@@ -45,6 +46,22 @@ describe('mixarg', function() {
       d: ['a', 'b']
     };
     var arg1 = '-a 2 --ca-mel=1 -c -d 1 -d 2';
+    mixarg(defaults, arg1).should.eql({
+      a: 2,
+      caMel: 1,
+      c: true,
+      d: [1, 2]
+    });
+  });
+
+  it('should mixin array', function() {
+    var defaults = {
+      a: 1,
+      caMel: 2,
+      c: false,
+      d: ['a', 'b']
+    };
+    var arg1 = '-a 2 --ca-mel=1 -c -d 1 -d 2'.split(' ');
     mixarg(defaults, arg1).should.eql({
       a: 2,
       caMel: 1,

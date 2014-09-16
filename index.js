@@ -29,8 +29,8 @@ function normalize(arg) {
     return arg;
   }
 
-  if (typeof arg === 'string') {
-    arg = minimist(arg.split(' '));
+  if (typeof arg === 'string' || Array.isArray(arg)) {
+    arg = minimist(Array.isArray(arg) ? arg : arg.split(' '));
     // hotfix minimist: --camel-case > camelCase
     for (var key in arg) {
       if (key.indexOf('-') > -1) {

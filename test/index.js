@@ -5,29 +5,13 @@ var mixarg = require('..');
 
 describe('mixarg', function() {
 
-  it('should throw when defaults is not object', function() {
-    (function() {
-      mixarg();
-    }).should.throw('defaults should be object');
-    (function() {
-      mixarg(null);
-    }).should.throw('defaults should be object');
-    (function() {
-      mixarg([]);
-    }).should.throw('defaults should be object');
-    mixarg({});
-  });
-
-  it('should throw when following arguments are not object or string', function() {
-    (function() {
-      mixarg({}, null);
-    }).should.throw('arguments should be string or object.');
-    (function() {
-      mixarg({}, true);
-    }).should.throw('arguments should be string or object.');
-    mixarg({}, {});
-    mixarg({}, '');
-    mixarg({}, []);
+  it('should return {} when unmatched type', function() {
+    mixarg().should.eql({});
+    mixarg(undefined, null).should.eql({});
+    mixarg('', []).should.eql({});
+    mixarg('     ').should.eql({});
+    mixarg(null, []).should.eql({});
+    mixarg([], undefined).should.eql({});
   });
 
   it('should not return the same ref', function() {
@@ -45,8 +29,9 @@ describe('mixarg', function() {
       c: false,
       d: ['a', 'b']
     };
-    var arg1 = '-a 2 --ca-mel=1 -c -d 1 -d 2';
+    var arg1 = '   -a    2 --ca-mel=1 -c -d 1 -d 2';
     mixarg(defaults, arg1).should.eql({
+      '_': [],
       a: 2,
       caMel: 1,
       c: true,
@@ -63,6 +48,7 @@ describe('mixarg', function() {
     };
     var arg1 = '-a 2 --ca-mel=1 -c -d 1 -d 2'.split(' ');
     mixarg(defaults, arg1).should.eql({
+      '_': [],
       a: 2,
       caMel: 1,
       c: true,
@@ -83,12 +69,9 @@ describe('mixarg', function() {
     mixarg(defaults, arg1).should.eql({
       a: 3,
       b: 2,
-      c: 3
+      c: 3,
+      d: 4
     });
-  });
-
-  it('should use key in defaults', function() {
-    mixarg({a: 1}, {b: 2}, {c: 3}).should.eql({a: 1});
   });
 
   it('should give the last argumnets high priority', function() {
@@ -99,6 +82,7 @@ describe('mixarg', function() {
     var arg1 = '-a 3 -b 4';
     var arg2 = '-b 5';
     mixarg(defaults, arg1, arg2).should.eql({
+      '_': [],
       a: 3,
       b: 5
     });

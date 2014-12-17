@@ -35,12 +35,10 @@ mixarg(defaults, '--verbose --include=all', {cwd: '/home/admin'});
 
 ## API
 
-mixarg(defaults, arg1, ..., argN);
+mixarg(arg1, ..., argN);
 
-- defaults should be object
 - arg should be object or string(parsed by minimist)
 - the latter argument has high priority than the former one
-- just using key in defaults, ignore unuse key
 
 ## LISENCE
 

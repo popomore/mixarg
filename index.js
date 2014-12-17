@@ -3,25 +3,12 @@
 var minimist = require('minimist');
 var extend = require('extend');
 
-module.exports = function mixarg(defaults) {
-  if (!isObject(defaults)) {
-    throw new Error('defaults should be object');
-  }
-
+module.exports = function mixarg() {
   var args = [].slice.call(arguments);
   args = args.map(function(item) {
     return normalize(item);
   });
-
-  var ret = {}, mixin = extend.apply(null, [{}].concat(args));
-
-  Object.keys(mixin).forEach(function(key) {
-    if (key in defaults) {
-      ret[key] = mixin[key];
-    }
-  });
-
-  return ret;
+  return extend.apply(null, [{}].concat(args));
 };
 
 function normalize(arg) {
@@ -29,18 +16,26 @@ function normalize(arg) {
     return arg;
   }
 
-  if (typeof arg === 'string' || Array.isArray(arg)) {
-    arg = minimist(Array.isArray(arg) ? arg : arg.split(' '));
+  if (typeof arg === 'string') {
+    arg = arg.trim();
+    if (arg === '') return null;
+    arg = arg.split(/\s+/);
+  }
+
+  if (Array.isArray(arg)) {
+    if (arg.length === 0) return null;
+    arg = minimist(arg);
     // hotfix minimist: --camel-case > camelCase
     for (var key in arg) {
       if (key.indexOf('-') > -1) {
         arg[camelcase(key)] = arg[key];
+        delete arg[key];
       }
     }
     return arg;
   }
 
-  throw new Error('arguments should be string or object.');
+  return null;
 }
 
 function isObject(obj) {
